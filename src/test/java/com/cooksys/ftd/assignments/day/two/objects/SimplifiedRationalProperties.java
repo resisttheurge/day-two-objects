@@ -103,7 +103,7 @@ public class SimplifiedRationalProperties {
     public void negate(@GenSim SimplifiedRational sr) {
         IRational result = sr.negate();
         assertTrue(sr != result);
-        assertEquals(new SimplifiedRational(-sr.getNumerator(), -sr.getDenominator()), result);
+        assertEquals(new SimplifiedRational(-sr.getNumerator(), sr.getDenominator()), result);
     }
 
     @Property
