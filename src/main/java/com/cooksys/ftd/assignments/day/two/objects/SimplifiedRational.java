@@ -3,6 +3,9 @@ package com.cooksys.ftd.assignments.day.two.objects;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class SimplifiedRational implements IRational {
+	
+	private int numerator, denominator;
+	
     /**
      * Determines the greatest common denominator for the given values
      *

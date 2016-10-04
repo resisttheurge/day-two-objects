@@ -64,12 +64,9 @@ public class Rational implements IRational {
      */
     @Override
     public boolean equals(Object obj) {
-        if((obj instanceof Rational) && 
-        		((Rational)obj).getNumerator() != numerator && 
-        		((Rational)obj).getDenominator() != denominator)
-        	return true;
-        else
-        	return false;
+        return ((obj instanceof Rational) && 
+        		((Rational)obj).getNumerator() == numerator && 
+        		((Rational)obj).getDenominator() == denominator);
     }
 
     /**
