@@ -67,7 +67,7 @@ public class RationalProperties {
     public void negate(@GenRat Rational r) {
         IRational result = r.negate();
         assertTrue(r != result);
-        assertEquals(new Rational(-r.getNumerator(), -r.getDenominator()), result);
+        assertEquals(new Rational(-r.getNumerator(), r.getDenominator()), result);
     }
 
     @Property
