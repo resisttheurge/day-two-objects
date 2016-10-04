@@ -7,14 +7,12 @@ import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
-import static com.cooksys.ftd.assignments.day.two.objects.RationalGenerator.GenRat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 @RunWith(JUnitQuickcheck.class)
 public class RationalProperties {
     @Rule
-    ExpectedException thrown = ExpectedException.none();
+    public ExpectedException thrown = ExpectedException.none();
 
     @Property
     public void constructorFail(int n) {
@@ -38,6 +36,7 @@ public class RationalProperties {
     @Property
     public void constructSuccess(@GenRat Rational _r, int n, @When(satisfies = "#_ != 0") int d) {
         Rational r = _r.construct(n, d);
+        assertTrue(_r != r);
         assertEquals(n, r.getNumerator());
         assertEquals(d, r.getDenominator());
     }
@@ -53,6 +52,7 @@ public class RationalProperties {
 
         Rational r3 = new Rational(r1.getNumerator() + 1, r1.getDenominator());
         assertNotEquals(r1, r3);
+        assertNotEquals(r2, r3);
     }
 
     @Property
@@ -60,12 +60,14 @@ public class RationalProperties {
         int n = r.getNumerator();
         int d = r.getDenominator();
 
-        assertEquals(n < 0 != d < 0 ? "-" : "" + n + "/" + d, r.toString());
+        assertEquals((n < 0 != d < 0 ? "-" : "") + Math.abs(n) + "/" + Math.abs(d), r.toString());
     }
 
     @Property
     public void negate(@GenRat Rational r) {
-        assertEquals(new Rational(-r.getNumerator(), -r.getDenominator()), r.negate());
+        IRational result = r.negate();
+        assertTrue(r != result);
+        assertEquals(new Rational(-r.getNumerator(), -r.getDenominator()), result);
     }
 
     @Property
@@ -76,7 +78,9 @@ public class RationalProperties {
 
     @Property
     public void invert(@GenRat Rational r) {
-        assertEquals(new Rational(r.getDenominator(), r.getNumerator()), r.invert());
+        IRational result = r.invert();
+        assertTrue(r != result);
+        assertEquals(new Rational(r.getDenominator(), r.getNumerator()), result);
     }
 
     @Property
@@ -87,11 +91,13 @@ public class RationalProperties {
 
     @Property
     public void add(@GenRat Rational r1, @GenRat Rational r2) {
+        IRational result = r1.add(r2);
+        assertTrue(r1 != result && r2 != result);
         int n1 = r1.getNumerator();
         int d1 = r1.getDenominator();
         int n2 = r2.getNumerator();
         int d2 = r2.getDenominator();
-        assertEquals(new Rational((n1 * d2) + (n2 * d1), d1 * d2), r1.add(r2));
+        assertEquals(new Rational((n1 * d2) + (n2 * d1), d1 * d2), result);
     }
 
     @Property
@@ -102,11 +108,13 @@ public class RationalProperties {
 
     @Property
     public void sub(@GenRat Rational r1, @GenRat Rational r2) {
+        IRational result = r1.sub(r2);
+        assertTrue(r1 != result && r2 != result);
         int n1 = r1.getNumerator();
         int d1 = r1.getDenominator();
         int n2 = r2.getNumerator();
         int d2 = r2.getDenominator();
-        assertEquals(new Rational((n1 * d2) - (n2 * d1), d1 * d2), r1.sub(r2));
+        assertEquals(new Rational((n1 * d2) - (n2 * d1), d1 * d2), result);
     }
 
     @Property
@@ -117,11 +125,13 @@ public class RationalProperties {
 
     @Property
     public void mul(@GenRat Rational r1, @GenRat Rational r2) {
+        IRational result = r1.mul(r2);
+        assertTrue(r1 != result && r2 != result);
         int n1 = r1.getNumerator();
         int d1 = r1.getDenominator();
         int n2 = r2.getNumerator();
         int d2 = r2.getDenominator();
-        assertEquals(new Rational(n1 * n2, d1 * d2), r1.mul(r2));
+        assertEquals(new Rational(n1 * n2, d1 * d2), result);
     }
 
     @Property
@@ -138,8 +148,11 @@ public class RationalProperties {
 
     @Property
     public void div(@GenRat Rational r1, @When(satisfies = "#_ != 0") int n2, @When(satisfies = "#_ != 0") int d2) {
+        Rational r2 = new Rational(n2, d2);
+        IRational result = r1.div(r2);
+        assertTrue(r1 != result && r2 != result);
         int n1 = r1.getNumerator();
         int d1 = r1.getDenominator();
-        assertEquals(new Rational(n1 * d2, d1 * n2), r1.div(new Rational(n2, d2)));
+        assertEquals(new Rational(n1 * d2, d1 * n2), result);
     }
 }

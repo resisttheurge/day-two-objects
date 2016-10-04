@@ -3,7 +3,6 @@ package com.cooksys.ftd.assignments.day.two.objects;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Rational implements IRational {
-
     /**
      * Constructor for rational values of the type:
      * <p>

@@ -1,16 +1,8 @@
 package com.cooksys.ftd.assignments.day.two.objects;
 
-import com.pholser.junit.quickcheck.From;
 import com.pholser.junit.quickcheck.generator.GenerationStatus;
 import com.pholser.junit.quickcheck.generator.Generator;
 import com.pholser.junit.quickcheck.random.SourceOfRandomness;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-import java.util.List;
-
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 public class SimplifiedRationalGenerator extends Generator<SimplifiedRational> {
 
@@ -24,21 +16,12 @@ public class SimplifiedRationalGenerator extends Generator<SimplifiedRational> {
     }
 
     public static int[] collapse(int t, int b) {
-        int e = euclid(Math.abs(t), Math.abs(b));
+        int e = t != 0 ? euclid(Math.abs(t), Math.abs(b)) : 1;
         return new int[] { t / e, b / e};
     }
 
-    @Target({PARAMETER, FIELD, ANNOTATION_TYPE, TYPE_USE})
-    @Retention(RUNTIME)
-    @From(SimplifiedRationalGenerator.class)
-    public @interface GenSim {}
-
-    protected SimplifiedRationalGenerator(Class<SimplifiedRational> type) {
-        super(type);
-    }
-
-    protected SimplifiedRationalGenerator(List<Class<SimplifiedRational>> types) {
-        super(types);
+    public SimplifiedRationalGenerator() {
+        super(SimplifiedRational.class);
     }
 
     @Override

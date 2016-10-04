@@ -20,7 +20,7 @@ interface IRational {
      * Essentially, this method allows us to implement most of IRational methods directly in the interface while
      * preserving the underlying type
      *
-     * @param numerator the numerator of the rational value to construct
+     * @param numerator   the numerator of the rational value to construct
      * @param denominator the denominator of the rational value to construct
      * @return the constructed rational value
      * @throws IllegalArgumentException if the given denominator is 0

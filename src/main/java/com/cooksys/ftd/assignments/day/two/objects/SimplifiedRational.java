@@ -3,14 +3,13 @@ package com.cooksys.ftd.assignments.day.two.objects;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class SimplifiedRational implements IRational {
-
     /**
      * Determines the greatest common denominator for the given values
      *
      * @param a the first value to consider
      * @param b the second value to consider
      * @return the greatest common denominator, or shared factor, of `a` and `b`
-     * @throws IllegalArgumentException if at least one of the given values a and b is negative
+     * @throws IllegalArgumentException if a <= 0 or b < 0
      */
     public static int gcd(int a, int b) throws IllegalArgumentException {
         throw new NotImplementedException();
@@ -18,11 +17,13 @@ public class SimplifiedRational implements IRational {
 
     /**
      * Simplifies the numerator and denominator of a rational value.
-     *
+     * <p>
      * For example:
      * `simplify(10, 100) = [1, 10]`
+     * or:
+     * `simplify(0, 10) = [0, 1]`
      *
-     * @param numerator the numerator of the rational value to simplify
+     * @param numerator   the numerator of the rational value to simplify
      * @param denominator the denominator of the rational value to simplify
      * @return a two element array representation of the simplified numerator and denominator
      * @throws IllegalArgumentException if the given denominator is 0
@@ -36,7 +37,8 @@ public class SimplifiedRational implements IRational {
      * <p>
      * `numerator / denominator`
      * <p>
-     * Simplification of numerator/denominator pair should occur in this method. If it does, simplification should be ensured for
+     * Simplification of numerator/denominator pair should occur in this method.
+     * If the numerator is zero, no further simplification can be performed
      *
      * @param numerator   the numerator of the rational value
      * @param denominator the denominator of the rational value

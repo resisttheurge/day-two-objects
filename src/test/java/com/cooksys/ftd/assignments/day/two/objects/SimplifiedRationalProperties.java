@@ -2,42 +2,37 @@ package com.cooksys.ftd.assignments.day.two.objects;
 
 import com.pholser.junit.quickcheck.Property;
 import com.pholser.junit.quickcheck.When;
+import com.pholser.junit.quickcheck.generator.InRange;
 import com.pholser.junit.quickcheck.runner.JUnitQuickcheck;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assume.*;
+import static com.cooksys.ftd.assignments.day.two.objects.SimplifiedRational.gcd;
+import static com.cooksys.ftd.assignments.day.two.objects.SimplifiedRational.simplify;
+import static com.cooksys.ftd.assignments.day.two.objects.SimplifiedRationalGenerator.collapse;
+import static com.cooksys.ftd.assignments.day.two.objects.SimplifiedRationalGenerator.euclid;
 import static org.junit.Assert.*;
-import static com.cooksys.ftd.assignments.day.two.objects.SimplifiedRationalGenerator.*;
-import static com.cooksys.ftd.assignments.day.two.objects.SimplifiedRational.*;
 
 @RunWith(JUnitQuickcheck.class)
 public class SimplifiedRationalProperties {
     @Rule
-    ExpectedException thrown = ExpectedException.none();
+    public ExpectedException thrown = ExpectedException.none();
 
     @Property
-    public void gcdFailA(@When(satisfies = "#_ < 0") int a, @When(satisfies = "#_ >= 0") int b) {
+    public void gcdFailA(@InRange(max = "-1") int a) {
         thrown.expect(IllegalArgumentException.class);
-        gcd(a, b);
+        gcd(a, 0);
     }
 
     @Property
-    public void gcdFailB(@When(satisfies = "#_ >= 0") int a, @When(satisfies = "#_ < 0") int b) {
+    public void gcdFailB(@InRange(max = "-1") int b) {
         thrown.expect(IllegalArgumentException.class);
-        gcd(a, b);
+        gcd(0, b);
     }
 
     @Property
-    public void gcdFail(@When(satisfies = "#_ < 0") int a, @When(satisfies = "#_ < 0") int b) {
-        thrown.expect(IllegalArgumentException.class);
-        gcd(a, b);
-    }
-
-    @Property
-    public void gcdSuccess(@When(satisfies = "#_ >= 0") int a, @When(satisfies = "#_ >= 0") int b) {
+    public void gcdSuccess(@InRange(min = "1") int a, @InRange(min = "0") int b) {
         assertEquals(euclid(a, b), gcd(a, b));
     }
 
@@ -49,7 +44,7 @@ public class SimplifiedRationalProperties {
 
     @Property
     public void simplifySuccess(int n, @When(satisfies = "#_ != 0") int d) {
-        assertEquals(collapse(n, d), simplify(n, d));
+        assertArrayEquals(collapse(n, d), simplify(n, d));
     }
 
     @Property
@@ -76,8 +71,8 @@ public class SimplifiedRationalProperties {
     @Property
     public void constructSuccess(@GenSim SimplifiedRational _r, int n, @When(satisfies = "#_ != 0") int d) {
         int[] expected = collapse(n, d);
-
         SimplifiedRational r = _r.construct(n, d);
+        assertTrue(_r != r);
         assertEquals(expected[0], r.getNumerator());
         assertEquals(expected[1], r.getDenominator());
     }
@@ -88,13 +83,12 @@ public class SimplifiedRationalProperties {
         assertNotEquals(r1, "");
         assertNotEquals(r1, null);
 
-        SimplifiedRational r2 = new SimplifiedRational(r1.getNumerator() * 2, r1.getDenominator() * 2);
+        IRational r2 = r1.construct(r1.getNumerator(), r1.getDenominator()).mul(r1.construct(2, 2));
         assertEquals(r1, r2);
 
-        SimplifiedRational r3 = new SimplifiedRational(r2.getNumerator() * 3, r2.getDenominator() * 3);
-        assertEquals(r2, r3);
-
-        assertEquals(r3, r1);
+        IRational r3 = r2.construct(r2.getNumerator() * 3, r2.getDenominator() * 5).mul(r2.construct(3, 5));
+        assertNotEquals(r1, r3);
+        assertNotEquals(r2, r3);
     }
 
     @Property
@@ -102,12 +96,14 @@ public class SimplifiedRationalProperties {
         int n = r.getNumerator();
         int d = r.getDenominator();
 
-        assertEquals(n < 0 != d < 0 ? "-" : "" + n + "/" + d, r.toString());
+        assertEquals((n < 0 != d < 0 ? "-" : "") + Math.abs(n) + "/" + Math.abs(d), r.toString());
     }
 
     @Property
     public void negate(@GenSim SimplifiedRational sr) {
-        assertEquals(new SimplifiedRational(-sr.getNumerator(), -sr.getDenominator()), sr.negate());
+        IRational result = sr.negate();
+        assertTrue(sr != result);
+        assertEquals(new SimplifiedRational(-sr.getNumerator(), -sr.getDenominator()), result);
     }
 
     @Property
@@ -118,7 +114,9 @@ public class SimplifiedRationalProperties {
 
     @Property
     public void invert(@GenSim SimplifiedRational sr) {
-        assertEquals(new SimplifiedRational(sr.getDenominator(), sr.getNumerator()), sr.invert());
+        IRational result = sr.invert();
+        assertTrue(sr != result);
+        assertEquals(new SimplifiedRational(sr.getDenominator(), sr.getNumerator()), result);
     }
 
     @Property
@@ -129,11 +127,13 @@ public class SimplifiedRationalProperties {
 
     @Property
     public void add(@GenSim SimplifiedRational r1, @GenSim SimplifiedRational r2) {
+        IRational result = r1.add(r2);
+        assertTrue(r1 != result && r2 != result);
         int n1 = r1.getNumerator();
         int d1 = r1.getDenominator();
         int n2 = r2.getNumerator();
         int d2 = r2.getDenominator();
-        assertEquals(new SimplifiedRational((n1 * d2) + (n2 * d1), d1 * d2), r1.add(r2));
+        assertEquals(new SimplifiedRational((n1 * d2) + (n2 * d1), d1 * d2), result);
     }
 
     @Property
@@ -144,11 +144,13 @@ public class SimplifiedRationalProperties {
 
     @Property
     public void sub(@GenSim SimplifiedRational r1, @GenSim SimplifiedRational r2) {
+        IRational result = r1.sub(r2);
+        assertTrue(r1 != result && r2 != result);
         int n1 = r1.getNumerator();
         int d1 = r1.getDenominator();
         int n2 = r2.getNumerator();
         int d2 = r2.getDenominator();
-        assertEquals(new SimplifiedRational((n1 * d2) - (n2 * d1), d1 * d2), r1.sub(r2));
+        assertEquals(new SimplifiedRational((n1 * d2) - (n2 * d1), d1 * d2), result);
     }
 
     @Property
@@ -159,11 +161,13 @@ public class SimplifiedRationalProperties {
 
     @Property
     public void mul(@GenSim SimplifiedRational r1, @GenSim SimplifiedRational r2) {
+        IRational result = r1.mul(r2);
+        assertTrue(r1 != result && r2 != result);
         int n1 = r1.getNumerator();
         int d1 = r1.getDenominator();
         int n2 = r2.getNumerator();
         int d2 = r2.getDenominator();
-        assertEquals(new SimplifiedRational(n1 * n2, d1 * d2), r1.mul(r2));
+        assertEquals(new SimplifiedRational(n1 * n2, d1 * d2), result);
     }
 
     @Property
@@ -180,8 +184,11 @@ public class SimplifiedRationalProperties {
 
     @Property
     public void div(@GenSim SimplifiedRational r1, @When(satisfies = "#_ != 0") int n2, @When(satisfies = "#_ != 0") int d2) {
+        SimplifiedRational r2 = new SimplifiedRational(n2, d2);
+        IRational result = r1.div(r2);
+        assertTrue(r1 != result && r2 != result);
         int n1 = r1.getNumerator();
         int d1 = r1.getDenominator();
-        assertEquals(new SimplifiedRational(n1 * d2, d1 * n2), r1.div(new SimplifiedRational(n2, d2)));
+        assertEquals(new SimplifiedRational(n1 * r2.getDenominator(), d1 * r2.getNumerator()), result);
     }
 }
