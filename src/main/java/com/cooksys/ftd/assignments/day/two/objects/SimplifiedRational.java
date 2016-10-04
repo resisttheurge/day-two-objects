@@ -70,11 +70,11 @@ public class SimplifiedRational implements IRational {
      *
      * @param numerator   the numerator of the rational value to construct
      * @param denominator the denominator of the rational value to construct
-     * @return the constructed rational value
+     * @return the constructed rational value (specifically, a SimplifiedRational value)
      * @throws IllegalArgumentException if the given denominator is 0
      */
     @Override
-    public IRational construct(int numerator, int denominator) throws IllegalArgumentException {
+    public SimplifiedRational construct(int numerator, int denominator) throws IllegalArgumentException {
         throw new NotImplementedException();
     }
 

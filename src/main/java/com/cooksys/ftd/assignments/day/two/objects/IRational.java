@@ -2,9 +2,6 @@ package com.cooksys.ftd.assignments.day.two.objects;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-/**
- *
- */
 interface IRational {
 
     /**
@@ -101,11 +98,11 @@ interface IRational {
      * division of rational values
      * <p>
      * definition:
-     * `(n1 / d1) * (n2 / d2) = (n1 * n2) / (d1 * d2)`
+     * `(n1 / d1) / (n2 / d2) = (n1 * d2) / (d1 * n2)`
      *
      * @param that the value to divide this by
      * @return the ratio of this to that
-     * @throws IllegalArgumentException if that is null
+     * @throws IllegalArgumentException if that is null or if the numerator of that is 0
      */
     default IRational div(IRational that) throws IllegalArgumentException {
         throw new NotImplementedException();
